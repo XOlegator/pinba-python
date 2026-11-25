@@ -24,7 +24,7 @@ jobs:
       - name: Check release commit
         id: release
         run: |
-          subject=$(git show -s --format=%s HEAD)
+          subject=$(git show -s --format=%s HEAD | sed -E 's/ \(#[0-9]+\)$//')
           version=$(python -c 'import json; print(json.load(open(".release-state.json"))["version"])')
           if [ "$subject" = "chore(release): prepare v${version}" ] && git diff-tree --no-commit-id --name-only -r HEAD | grep -qx '.release-state.json'; then
             echo "version=$version" >> "$GITHUB_OUTPUT"
