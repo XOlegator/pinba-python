@@ -1,5 +1,11 @@
 # pinba-python
 
+[![CI](https://github.com/XOlegator/pinba-python/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/XOlegator/pinba-python/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/pinba-python?logo=pypi&logoColor=white)](https://pypi.org/project/pinba-python/)
+[![GitHub release](https://img.shields.io/github/v/release/XOlegator/pinba-python)](https://github.com/XOlegator/pinba-python/releases/latest)
+[![Python](https://img.shields.io/badge/python-%3E%3D3.15-blue?logo=python&logoColor=white)](https://pypi.org/project/pinba-python/)
+[![License: LGPL-2.1-or-later](https://img.shields.io/badge/license-LGPL--2.1--or--later-blue)](LICENSE)
+
 Best-effort Pinba proto2 UDP instrumentation for Python 3.15+. This client sends request and timer metrics to [Pinba Engine](https://github.com/XOlegator/pinba_engine). One datagram is sent per sampled operation. Create one reporter **per worker after fork** and close it at shutdown; construction resolves DNS once. `sendto` is non-blocking and no queue or retry is used. A successful send only means that the local socket accepted the datagram, not that the engine received it.
 
 ## Where This Project Fits
