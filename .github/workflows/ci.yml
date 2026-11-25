@@ -27,7 +27,7 @@ jobs:
           /tmp/pinba-wheel/bin/pip install dist/*.whl
           cd /tmp
           /tmp/pinba-wheel/bin/python -c 'from pinba import Collector, PinbaMiddleware, Reporter'
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: distributions
           path: dist/*
