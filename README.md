@@ -5,12 +5,12 @@ Best-effort Pinba proto2 UDP instrumentation for Python 3.15+. One datagram is s
 ```python
 from pinba import PinbaMiddleware, Reporter, timed_block, record
 
-reporter = Reporter('pinba-engine', 30002)
-app = PinbaMiddleware(app, reporter, server_name='recommendations_api', sample_rate=0.1)
+reporter = Reporter("pinba-engine", 30002)
+app = PinbaMiddleware(app, reporter, server_name="recommendations_api", sample_rate=0.1)
 
-with timed_block({'group': 'ai_naming', 'category': 'naming.registry'}):
+with timed_block({"group": "ai_naming", "category": "naming.registry"}):
     read_registry()
-record(0.002, {'group': 'ai_naming', 'category': 'naming.matches'})
+record(0.002, {"group": "ai_naming", "category": "naming.matches"})
 # reporter.close() at worker shutdown
 ```
 

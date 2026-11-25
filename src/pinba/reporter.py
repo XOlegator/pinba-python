@@ -1,4 +1,5 @@
 """Best-effort non-blocking UDP export; address resolution occurs at startup."""
+
 import socket
 from threading import Lock
 
@@ -35,7 +36,7 @@ class Reporter:
                     return False
                 self.sent += 1
                 return True
-        except (ValueError, OverflowError, UnicodeError):
+        except ValueError, OverflowError, UnicodeError:
             with self._lock:
                 self.errors += 1
             return False
