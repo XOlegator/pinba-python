@@ -25,6 +25,7 @@ jobs:
         run: echo "version=$(python -c 'import json; print(json.load(open(".release-state.json"))["version"])')" >> "$GITHUB_OUTPUT"
       - uses: peter-evans/create-pull-request@v8
         with:
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
           branch: automation/release
           delete-branch: true
           commit-message: 'chore(release): prepare v${{ steps.version.outputs.version }}'
