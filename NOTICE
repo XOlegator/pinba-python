@@ -1,0 +1,10 @@
+Pinba Python — provenance and third-party notices
+
+This project includes src/pinba/pinba.proto, copied from the Pinba PHP extension:
+https://github.com/XOlegator/pinba_extension
+The extension is a maintained fork of Antony Dovgal's original project and is
+licensed under GNU LGPL version 2.1 or later. Its copyright holders include Antony
+Dovgal and Oleg Ekhlakov. src/pinba/pinba_pb2.py was generated from this schema.
+
+The protobuf Python runtime is a separately installed dependency, licensed under
+the BSD 3-Clause license: https://github.com/protocolbuffers/protobuf/blob/main/LICENSE
