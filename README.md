@@ -5,12 +5,12 @@ Best-effort Pinba proto2 UDP instrumentation for Python 3.15+. One datagram is s
 ```python
 from pinba import PinbaMiddleware, Reporter, timed_block, record
 
-reporter = Reporter('pinba-engine', 30002)
-app = PinbaMiddleware(app, reporter, server_name='recommendations_api', sample_rate=0.1)
+reporter = Reporter("pinba-engine", 30002)
+app = PinbaMiddleware(app, reporter, server_name="recommendations_api", sample_rate=0.1)
 
-with timed_block({'group': 'ai_naming', 'category': 'naming.registry'}):
+with timed_block({"group": "ai_naming", "category": "naming.registry"}):
     read_registry()
-record(0.002, {'group': 'ai_naming', 'category': 'naming.matches'})
+record(0.002, {"group": "ai_naming", "category": "naming.matches"})
 # reporter.close() at worker shutdown
 ```
 
@@ -20,7 +20,7 @@ HTTP duration begins at middleware entry and ends after the final `http.response
 
 `max_timers` defaults to 128, tag names and values are limited to 256 UTF-8 bytes, and datagrams to 1400 bytes. Oversized packets are dropped whole. Inspect `sent`, `errors`, `oversized`, and `dropped_timers` on the reporter; these are process-local counters. Configure limits for the actual network and compare sends to engine ingestion and `SHOW GLOBAL STATUS LIKE 'Pinba%'`. Sampling selects complete requests. Disabled integration should avoid constructing a reporter entirely. Measure latency, CPU and delivery before production use.
 
-The bundled schema is shared with Pinba Engine and the PHP extension; regenerate bindings with `protoc -I src/pinba --python_out=src/pinba src/pinba/pinba.proto`. Run tests with `pip install -e '.[test]'` and `pytest` on Python 3.15. A live Engine and Pinboard integration test and production overhead measurements are still required.
+The bundled schema is shared with Pinba Engine and the PHP extension; regenerate bindings with `protoc -I src/pinba --python_out=src/pinba --pyi_out=src/pinba src/pinba/pinba.proto`. Run tests with `pip install -e '.[test]'` and `pytest` on Python 3.15. A live Engine and Pinboard integration test and production overhead measurements are still required.
 
 ## Installation
 

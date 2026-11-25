@@ -13,9 +13,30 @@ dependencies = ["protobuf>=5"]
 
 [project.optional-dependencies]
 test = ["pytest>=8", "httpx>=0.28", "starlette>=0.46"]
+dev = ["pre-commit>=4.7,<5", "ruff>=0.17.6,<0.18", "ty>=0.0.110,<0.1", "types-protobuf>=7.35.1.20261122"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.setuptools.package-data]
 pinba = ["*.proto"]
+
+[tool.ruff]
+target-version = "py315"
+line-length = 100
+preview = true
+extend-exclude = ["src/pinba/pinba_pb2.py", "src/pinba/pinba_pb2.pyi", "build/**", "dist/**"]
+
+[tool.ruff.lint]
+select = ["E", "F", "B", "I", "UP", "D", "FLY", "RUF", "PTH", "SIM", "PERF", "T10", "SLF"]
+ignore = [
+    "E501", "D100", "D101", "D102", "D103", "D104", "D105", "D106", "D107",
+    "D203", "D205", "D212", "D213", "RUF001", "RUF002", "RUF003", "SLF001",
+    "RUF029", "B904", "PTH118", "SIM105", "G004", "B008", "SIM117",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["D"]
+
+[tool.ty.src]
+exclude = ["src/pinba/pinba_pb2.py", "src/pinba/pinba_pb2.pyi", "build/**", "dist/**"]

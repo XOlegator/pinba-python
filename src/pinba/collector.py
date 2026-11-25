@@ -1,15 +1,16 @@
 """Request-local collection, including calls from copied thread contexts."""
+
+import math
+from collections.abc import Mapping
 from contextlib import contextmanager
 from contextvars import ContextVar
 from dataclasses import dataclass, field
-import math
 from threading import Lock
 from time import perf_counter_ns
-from typing import Mapping
 
 from . import pinba_pb2
 
-current: ContextVar["Collector | None"] = ContextVar("pinba_current", default=None)
+current: ContextVar[Collector | None] = ContextVar("pinba_current", default=None)
 
 
 @dataclass
@@ -29,9 +30,15 @@ class Collector:
     dropped_timers: int = field(default=0, init=False)
 
     def _validate_tags(self, tags):
-        return all(isinstance(k, str) and isinstance(v, str) and k and v and
-                   len(k.encode('utf-8')) <= self.max_tag_bytes and
-                   len(v.encode('utf-8')) <= self.max_tag_bytes for k, v in tags.items())
+        return all(
+            isinstance(k, str)
+            and isinstance(v, str)
+            and k
+            and v
+            and len(k.encode("utf-8")) <= self.max_tag_bytes
+            and len(v.encode("utf-8")) <= self.max_tag_bytes
+            for k, v in tags.items()
+        )
 
     def record(self, seconds: float, tags: Mapping[str, str]) -> bool:
         if not math.isfinite(seconds) or seconds < 0 or seconds > 3.4e38:
@@ -64,18 +71,30 @@ class Collector:
             tags = dict(self.tags)
         if not self._validate_tags(tags):
             raise ValueError("invalid request tags")
-        request = pinba_pb2.Request(hostname=self.hostname, server_name=self.server_name,
-            script_name=self.script_name, request_count=1, document_size=min(self.document_size, 2**32 - 1),
-            memory_peak=0, request_time=max(0, (end_ns if end_ns is not None else perf_counter_ns()) - self.start_ns) / 1e9,
-            ru_utime=0, ru_stime=0)
+        request = pinba_pb2.Request(
+            hostname=self.hostname,
+            server_name=self.server_name,
+            script_name=self.script_name,
+            request_count=1,
+            document_size=min(self.document_size, 2**32 - 1),
+            memory_peak=0,
+            request_time=max(
+                0, (end_ns if end_ns is not None else perf_counter_ns()) - self.start_ns
+            )
+            / 1e9,
+            ru_utime=0,
+            ru_stime=0,
+        )
         if self.status:
             request.status = self.status
         dictionary = {}
+
         def index(word):
             if word not in dictionary:
                 dictionary[word] = len(dictionary)
                 request.dictionary.append(word)
             return dictionary[word]
+
         for name, value in tags.items():
             request.tag_name.append(index(name))
             request.tag_value.append(index(value))

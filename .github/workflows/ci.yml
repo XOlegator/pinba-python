@@ -17,8 +17,9 @@ jobs:
       - uses: actions/setup-python@v7
         with:
           python-version: '3.15'
-      - run: python -m pip install '.[test]' build ruff
-      - run: ruff check --select E9,F63,F7,F82 --exclude src/pinba/pinba_pb2.py src scripts tests
+      - run: python -m pip install '.[test,dev]' build
+      - run: pre-commit run --all-files
+      - run: ty check --python "$(command -v python)"
       - run: python -m pytest -q
       - run: python -m build
       - name: Verify wheel installation
