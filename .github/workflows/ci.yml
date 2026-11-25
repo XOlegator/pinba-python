@@ -13,8 +13,8 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.15'
       - run: python -m pip install '.[test]' build ruff
@@ -27,15 +27,15 @@ jobs:
           /tmp/pinba-wheel/bin/pip install dist/*.whl
           cd /tmp
           /tmp/pinba-wheel/bin/python -c 'from pinba import Collector, PinbaMiddleware, Reporter'
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: distributions
           path: dist/*
   protobuf-drift:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.15'
       - run: python -m pip install '.[test]'

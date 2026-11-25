@@ -13,17 +13,17 @@ jobs:
   prepare:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.15'
       - run: python scripts/prepare_release.py
       - name: Determine version
         id: version
         run: echo "version=$(python -c 'import json; print(json.load(open(".release-state.json"))["version"])')" >> "$GITHUB_OUTPUT"
-      - uses: peter-evans/create-pull-request@v7
+      - uses: peter-evans/create-pull-request@v8
         with:
           branch: automation/release
           delete-branch: true
