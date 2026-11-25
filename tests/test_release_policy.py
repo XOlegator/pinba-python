@@ -4,6 +4,7 @@ from pathlib import Path
 spec = importlib.util.spec_from_file_location(
     "release_policy", Path(__file__).parents[1] / "scripts" / "prepare_release.py"
 )
+assert spec is not None and spec.loader is not None
 policy = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(policy)
 

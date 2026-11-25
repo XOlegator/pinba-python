@@ -1,4 +1,4 @@
-exclude: ^src/pinba/pinba_pb2\.py$
+exclude: ^src/pinba/pinba_pb2\.pyi?$
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
