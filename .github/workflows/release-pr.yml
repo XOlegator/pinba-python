@@ -23,7 +23,7 @@ jobs:
       - name: Determine version
         id: version
         run: echo "version=$(python -c 'import json; print(json.load(open(".release-state.json"))["version"])')" >> "$GITHUB_OUTPUT"
-      - uses: peter-evans/create-pull-request@v7
+      - uses: peter-evans/create-pull-request@v8
         with:
           branch: automation/release
           delete-branch: true
