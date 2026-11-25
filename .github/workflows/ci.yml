@@ -1,8 +1,14 @@
 name: CI
 on:
   push:
+    branches: [main]
   pull_request:
-
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -11,6 +17,28 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.15'
-      - run: python -m pip install '.[test]' build
+      - run: python -m pip install '.[test]' build ruff
+      - run: ruff check --select E9,F63,F7,F82 --exclude src/pinba/pinba_pb2.py src scripts tests
       - run: python -m pytest -q
       - run: python -m build
+      - name: Verify wheel installation
+        run: |
+          python -m venv /tmp/pinba-wheel
+          /tmp/pinba-wheel/bin/pip install dist/*.whl
+          cd /tmp
+          /tmp/pinba-wheel/bin/python -c 'from pinba import Collector, PinbaMiddleware, Reporter'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: distributions
+          path: dist/*
+  protobuf-drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.15'
+      - run: python -m pip install '.[test]'
+      - run: sudo apt-get update && sudo apt-get install -y protobuf-compiler
+      - run: python scripts/check_proto.py
+      - run: python -m pytest -q tests/test_proto.py
