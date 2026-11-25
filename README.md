@@ -1,6 +1,29 @@
 # pinba-python
 
-Best-effort Pinba proto2 UDP instrumentation for Python 3.15+. One datagram is sent per sampled operation. Create one reporter **per worker after fork** and close it at shutdown; construction resolves DNS once. `sendto` is non-blocking and no queue or retry is used. A successful send only means that the local socket accepted the datagram, not that the engine received it.
+Best-effort Pinba proto2 UDP instrumentation for Python 3.15+. This client sends request and timer metrics to [Pinba Engine](https://github.com/XOlegator/pinba_engine). One datagram is sent per sampled operation. Create one reporter **per worker after fork** and close it at shutdown; construction resolves DNS once. `sendto` is non-blocking and no queue or retry is used. A successful send only means that the local socket accepted the datagram, not that the engine received it.
+
+## Where This Project Fits
+
+```mermaid
+flowchart LR
+    app[Python application]
+    client[pinba-python]
+    engine[Pinba Engine plugin]
+    mysql[(MySQL)]
+    pinboard[Pinboard]
+
+    app -->|request and timer metrics| client
+    client -->|UDP protobuf datagram| engine
+    engine --- mysql
+    pinboard -->|SQL queries and dashboards| mysql
+```
+
+- `pinba-python` collects metrics inside Python applications and sends one UDP datagram per sampled operation.
+- [Pinba Engine](https://github.com/XOlegator/pinba_engine) receives packets and exposes metrics through MySQL tables.
+- [Pinboard](https://github.com/intaro/pinboard) reads metrics from MySQL and provides dashboards.
+- [Pinba Extension](https://github.com/XOlegator/pinba_extension) is the corresponding PHP client.
+
+## Usage
 
 ```python
 from pinba import PinbaMiddleware, Reporter, timed_block, record
@@ -28,7 +51,7 @@ The bundled schema is shared with Pinba Engine and the PHP extension; regenerate
 python -m pip install pinba-python
 ```
 
-Installation from PyPI requires the project to be published there first. Until then, install from a checkout with `python -m pip install .`.
+To install from a local checkout instead, run `python -m pip install .`.
 
 ## License
 
